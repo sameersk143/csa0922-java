@@ -1,0 +1,131 @@
+import java.util.*;
+
+class Cab {
+    private int cabId;
+    private String driverName;
+    private String carModel;
+    private boolean available;
+
+    public Cab(int cabId, String driverName, String carModel) {
+        this.cabId = cabId;
+        this.driverName = driverName;
+        this.carModel = carModel;
+        this.available = true;
+    }
+
+    public int getCabId() {
+        return cabId;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+}
+
+class Customer {
+    private String name;
+    private String phoneNumber;
+
+    public Customer(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+}
+
+class Booking {
+    private int bookingId;
+    private Customer customer;
+    private Cab cab;
+    private Date bookingTime;
+
+    public Booking(int bookingId, Customer customer, Cab cab, Date bookingTime) {
+        this.bookingId = bookingId;
+        this.customer = customer;
+        this.cab = cab;
+        this.bookingTime = bookingTime;
+    }
+
+    public int getBookingId() {
+        return bookingId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Cab getCab() {
+        return cab;
+    }
+
+    public Date getBookingTime() {
+        return bookingTime;
+    }
+}
+
+public class CabBookingSystem {
+    private List<Cab> cabs;
+    private List<Booking> bookings;
+    private int nextBookingId;
+
+    public CabBookingSystem() {
+        cabs = new ArrayList<>();
+        bookings = new ArrayList<>();
+        nextBookingId = 1;
+    }
+
+    public void addCab(Cab cab) {
+        cabs.add(cab);
+    }
+
+    public void bookCab(Customer customer) {
+        Cab availableCab = findAvailableCab();
+        if (availableCab != null) {
+            Booking booking = new Booking(nextBookingId++, customer, availableCab, new Date());
+            availableCab.setAvailable(false);
+            bookings.add(booking);
+            System.out.println("Booking successful! Cab details: " + availableCab.getDriverName() + " - " + availableCab.getCarModel());
+        } else {
+            System.out.println("No cabs available at the moment. Please try again later.");
+        }
+    }
+
+    private Cab findAvailableCab() {
+        for (Cab cab : cabs) {
+            if (cab.isAvailable()) {
+                return cab;
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        CabBookingSystem cabBookingSystem = new CabBookingSystem();
+
+        cabBookingSystem.addCab(new Cab(1, "John", "Toyota"));
+        cabBookingSystem.addCab(new Cab(2, "Alice", "Honda"));
+        cabBookingSystem.addCab(new Cab(3, "Bob", "Ford"));
+
+        Customer customer = new Customer("Jane", "1234567890");
+        cabBookingSystem.bookCab(customer);
+    }
+}
